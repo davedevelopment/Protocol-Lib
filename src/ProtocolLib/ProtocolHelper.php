@@ -5,6 +5,13 @@ namespace ProtocolLib;
 class ProtocolHelper {
     protected static $cache = array();
 
+    protected static $disabled = false;
+
+    public static function disable()
+    {
+        static::$disabled = true;
+    }
+
     public static function getProtocol($interface) {
         if (!isset(static::$cache[$interface])) {
             static::$cache[$interface] = new ProtocolWrapper($interface);
@@ -20,15 +27,15 @@ class ProtocolHelper {
     }
 
     public static function doesImplement($obj, $interface) {
-        return static::getProtocol($interface)->doesImplement($obj);
+        return static::$disabled || static::getProtocol($interface)->doesImplement($obj);
     }
 
     public static function doesMethodImplement($method, $interface) {
-        return static::getMethodProtocol($interface)->doesMethodImplement($method);
+        return static::$disabled || static::getMethodProtocol($interface)->doesMethodImplement($method);
     }
 
     public static function doesFunctionImplement($function, $interface) {
-        return static::getMethodProtocol($interface)->doesFunctionImplement($function);
+        return static::$disabled || static::getMethodProtocol($interface)->doesFunctionImplement($function);
     }
 
 }
